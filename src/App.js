@@ -15,8 +15,16 @@ export default class App extends Component {
     showSpinner: false,
     largeImageURL: '',
   };
+  changeInputValue = query => {
+    this.setState({
+      query,
+      page: 1,
+      images: [],
+    });
+  };
 
   render() {
+    const { images, showModal, showSpinner, largeImageURL } = this.state;
     return (
       <div className={s.App}>
         <Searchbar onSubmit={this.changeInputValue} />
