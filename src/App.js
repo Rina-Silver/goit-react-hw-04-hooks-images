@@ -5,6 +5,8 @@ import Searchbar from 'components/Searchbar';
 // import Loader from 'components/Loader';
 // import Button from 'components/Button';
 // import Modal from 'components/Modal';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 //rcc
 export default class App extends Component {
   state = {
@@ -28,6 +30,19 @@ export default class App extends Component {
     return (
       <div className={s.App}>
         <Searchbar onSubmit={this.changeInputValue} />
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
+        {/* Same as */}
+        <ToastContainer />
       </div>
     );
   }
