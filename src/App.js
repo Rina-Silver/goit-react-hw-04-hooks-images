@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import s from './App.module.css';
 import Searchbar from 'components/Searchbar';
 import ImageGallery from 'components/ImageGallery';
-// import Loader from 'components/Loader';
+import Loader from 'components/Loader';
 // import Button from 'components/Button';
 // import Modal from 'components/Modal';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { mapper } from './helper/mapper';
 
 const BASE_URL =
   'https://pixabay.com/api/?image_type=photo&orientation=horizontal';
@@ -40,18 +41,20 @@ export default class App extends Component {
   };
 
   getImages = () => {
-    const { searchQuery, page } = this.state;
+    const { query, page } = this.state;
 
-    this.setState({ isLoading: true });
+    this.setState({ showSpinner: true });
 
-    fetch(`${BASE_URL}&q=${searchQuery}&page=${page}&key=${API_KEY}`)
-      .then(res => res.json())
-
-      .then(
-        this.setState(prevState => ({
-          images: [...prevState.images],
-        })),
-      );
+    fetch(`${BASE_URL}&q=${query}&page=${page}&key=${API_KEY}`).then(res =>
+      res
+        .json()
+        .then(images => {
+          this.setState(prevState => ({
+            images: [...prevState.images, ...mapper(images.hits)],
+          }));
+        })
+        .finally(() => this.setState({ showSpinner: false })),
+    );
   };
 
   render() {
@@ -86,6 +89,7 @@ export default class App extends Component {
             progress: undefined,
           })
         )}
+        {showSpinner && <Loader />}
       </div>
     );
   }

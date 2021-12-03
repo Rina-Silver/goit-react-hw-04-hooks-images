@@ -7,10 +7,11 @@ export default function ImageGallery({ images, onOpenModal }) {
   return (
     <div>
       <ul className={s.ImageGallery}>
-        {images.map(image => (
+        {images.map(({ id, webformatURL, largeImageURL }) => (
           <ImageGalleryItem
-            {...image}
-            key={image.id}
+            id={id}
+            src={webformatURL}
+            srcLarge={largeImageURL}
             onOpenModal={onOpenModal}
           />
         ))}
