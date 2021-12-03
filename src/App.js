@@ -10,26 +10,37 @@ import 'react-toastify/dist/ReactToastify.css';
 import { mapper } from './helper/mapper';
 
 const BASE_URL =
-  'https://pixabay.com/api/?image_type=photo&orientation=horizontal';
+  'https://pixabay.com/api/?image_type=photo&orientation=horizontal&per_page=12';
 const API_KEY = '23479775-7c8a7e565023089f3ce2cecd2';
 
 //rcc
 export default class App extends Component {
   state = {
-    images: [],
+    images: null,
     query: '',
     page: 1,
     showModal: false,
     showSpinner: false,
     largeImageURL: '',
+    error: null,
   };
 
   componentDidUpdate(prevProps, prevState) {
     if (
       prevState.query !== this.state.query ||
       prevState.page !== this.state.page
-    )
-      this.getImages();
+    ) {
+      return this.getImages();
+    } else {
+      return toast.warn(`Ничего не найдено`, {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
   }
 
   changeInputValue = query => {
@@ -41,24 +52,29 @@ export default class App extends Component {
   };
 
   getImages = () => {
-    const { query, page } = this.state;
+    const { query, page, error } = this.state;
 
     this.setState({ showSpinner: true });
 
-    fetch(`${BASE_URL}&q=${query}&page=${page}&key=${API_KEY}`).then(res =>
-      res
-        .json()
-        .then(images => {
-          this.setState(prevState => ({
-            images: [...prevState.images, ...mapper(images.hits)],
-          }));
-        })
-        .finally(() => this.setState({ showSpinner: false })),
-    );
+    fetch(`${BASE_URL}&q=${query}&page=${page}&key=${API_KEY}`)
+      .then(res => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(new Error(`Что-то пошло не так`));
+      })
+      .then(images => {
+        this.setState(prevState => ({
+          images: [...prevState.images, ...mapper(images.hits)],
+        }));
+      })
+      .catch(error => this.setState({ error }))
+      .finally(() => this.setState({ showSpinner: false }));
   };
 
   render() {
-    const { images, query, showModal, showSpinner, largeImageURL } = this.state;
+    const { images, query, showModal, showSpinner, largeImageURL, error } =
+      this.state;
     return (
       <div className={s.App}>
         <Searchbar onSubmit={this.changeInputValue} />
@@ -74,22 +90,21 @@ export default class App extends Component {
           pauseOnHover
         />
 
-        <ToastContainer />
-        {images.length !== 0 ? (
+        {images && (
           <ImageGallery images={images} onOpenModal={this.onClickLargeImage} />
-        ) : (
-          query !== '' &&
-          toast.warn('Ничего не найдено', {
+        )}
+
+        {showSpinner && <Loader />}
+
+        {error &&
+          toast.error(`${error.massage}`, {
             position: 'top-right',
             autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: true,
-            pauseOnHover: true,
             draggable: true,
             progress: undefined,
-          })
-        )}
-        {showSpinner && <Loader />}
+          })}
       </div>
     );
   }
