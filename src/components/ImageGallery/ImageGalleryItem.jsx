@@ -11,6 +11,7 @@ export default function ImageGalleryItem({ id, src, srcLarge, onOpenModal }) {
       onClick={() => onOpenModal({ srcLarge })}
     >
       <img
+        id={id}
         src={src}
         alt="Pic from Pixabay"
         className={s.ImageGalleryItem__image}
