@@ -7,6 +7,11 @@ import ImageGallery from 'components/ImageGallery';
 // import Modal from 'components/Modal';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
+const BASE_URL =
+  'https://pixabay.com/api/?image_type=photo&orientation=horizontal';
+const API_KEY = '23479775-7c8a7e565023089f3ce2cecd2';
+
 //rcc
 export default class App extends Component {
   state = {
@@ -17,12 +22,36 @@ export default class App extends Component {
     showSpinner: false,
     largeImageURL: '',
   };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      prevState.query !== this.state.query ||
+      prevState.page !== this.state.page
+    )
+      this.getImages();
+  }
+
   changeInputValue = query => {
     this.setState({
       query,
       page: 1,
       images: [],
     });
+  };
+
+  getImages = () => {
+    const { searchQuery, page } = this.state;
+
+    this.setState({ isLoading: true });
+
+    fetch(`${BASE_URL}&q=${searchQuery}&page=${page}&key=${API_KEY}`)
+      .then(res => res.json())
+
+      .then(
+        this.setState(prevState => ({
+          images: [...prevState.images],
+        })),
+      );
   };
 
   render() {
@@ -41,7 +70,7 @@ export default class App extends Component {
           draggable
           pauseOnHover
         />
-        {/* Same as */}
+
         <ToastContainer />
         {images.length !== 0 ? (
           <ImageGallery images={images} onOpenModal={this.onClickLargeImage} />
