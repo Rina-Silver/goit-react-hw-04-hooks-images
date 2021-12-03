@@ -7,7 +7,7 @@ export default function ImageGalleryItem({ id, src, srcLarge, onOpenModal }) {
   return (
     <li
       className={s.ImageGalleryItem}
-      key={id}
+      key={src}
       onClick={() => onOpenModal({ srcLarge })}
     >
       <img
