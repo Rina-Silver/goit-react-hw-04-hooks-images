@@ -3,7 +3,7 @@ import s from './App.module.css';
 import Searchbar from 'components/Searchbar';
 import ImageGallery from 'components/ImageGallery';
 import Loader from 'components/Loader';
-// import Button from 'components/Button';
+import Button from 'components/Button';
 import Modal from 'components/Modal';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -69,8 +69,15 @@ export default class App extends Component {
   };
 
   onClickImg = imageModal => {
-    this.setState({ largeImageURL: imageModal });
+    this.setState({ largeImageURL: imageModal.srcLarge });
     this.toggleModal();
+  };
+
+  clickLoadMore = e => {
+    e.preventDefault();
+    this.setState(prevState => {
+      return { page: prevState.page + 1 };
+    });
   };
 
   render() {
@@ -93,6 +100,9 @@ export default class App extends Component {
         {images && (
           <ImageGallery images={images} onOpenModal={this.onClickImg} />
         )}
+        {images && images.length >= 12 && (
+          <Button onClick={this.clickLoadMore} />
+        )}
 
         {showSpinner && <Loader />}
         {showModal && (
@@ -100,7 +110,7 @@ export default class App extends Component {
         )}
 
         {error &&
-          toast.error(`${error.massage}`, {
+          toast.error(`${error}`, {
             position: 'top-right',
             autoClose: 5000,
             hideProgressBar: false,
