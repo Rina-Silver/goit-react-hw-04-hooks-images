@@ -8,10 +8,7 @@ import Loader from 'components/Loader';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { mapper } from './helper/mapper';
-
-const BASE_URL =
-  'https://pixabay.com/api/?image_type=photo&orientation=horizontal&per_page=12';
-const API_KEY = '23479775-7c8a7e565023089f3ce2cecd2';
+import * as API from './services/pixabay-api';
 
 //rcc
 export default class App extends Component {
@@ -56,13 +53,7 @@ export default class App extends Component {
 
     this.setState({ showSpinner: true });
 
-    fetch(`${BASE_URL}&q=${query}&page=${page}&key=${API_KEY}`)
-      .then(res => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(new Error(`Что-то пошло не так`));
-      })
+    API.fetchPixabayImg(query, page)
       .then(images => {
         this.setState(prevState => ({
           images: [...prevState.images, ...mapper(images.hits)],

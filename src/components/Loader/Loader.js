@@ -1,8 +1,11 @@
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 import Loader from 'react-loader-spinner';
+const centeredLoader = {
+  textAlign: 'center',
+};
 
 const loader = () => (
-  <div>
+  <div style={{ ...centeredLoader }}>
     <Loader
       type="TailSpin"
       color="#00BFFF"
