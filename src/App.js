@@ -78,6 +78,10 @@ export default class App extends Component {
     this.setState(prevState => {
       return { page: prevState.page + 1 };
     });
+    window.scrollTo({
+      end: document.documentElement.scrollHeight,
+      behavior: 'smooth',
+    });
   };
 
   render() {
