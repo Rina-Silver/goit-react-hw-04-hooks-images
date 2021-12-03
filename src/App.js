@@ -61,7 +61,12 @@ export default class App extends Component {
         }
       })
       .catch(error => this.setState({ error }))
-      .finally(() => this.setState({ showSpinner: false }));
+      .finally(() => {
+        this.setState({ showSpinner: false });
+        if (page > 1) {
+          this.scrollTo();
+        }
+      });
   };
 
   toggleModal = () => {
@@ -78,8 +83,10 @@ export default class App extends Component {
     this.setState(prevState => {
       return { page: prevState.page + 1 };
     });
+  };
+  scrollTo = () => {
     window.scrollTo({
-      end: document.documentElement.scrollHeight,
+      top: document.documentElement.scrollHeight,
       behavior: 'smooth',
     });
   };
@@ -105,7 +112,7 @@ export default class App extends Component {
           <ImageGallery images={images} onOpenModal={this.onClickImg} />
         )}
         {images && images.length >= 12 && (
-          <Button onClick={this.clickLoadMore} />
+          <Button images={images} onClick={this.clickLoadMore} />
         )}
 
         {showSpinner && <Loader />}
