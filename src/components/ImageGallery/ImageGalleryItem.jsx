@@ -3,16 +3,17 @@ import React from 'react';
 import s from './ImageGallery.module.css';
 
 export default function ImageGalleryItem({ id, src, srcLarge, onOpenModal }) {
+  // console.log(srcLarge);
   return (
     <li
-      className={s.imageGalleryItem}
+      className={s.ImageGalleryItem}
       key={id}
       onClick={() => onOpenModal({ srcLarge })}
     >
       <img
         src={src}
         alt="Pic from Pixabay"
-        className={s.imageGalleryItem__image}
+        className={s.ImageGalleryItem__image}
       />
     </li>
   );

@@ -4,7 +4,7 @@ import Searchbar from 'components/Searchbar';
 import ImageGallery from 'components/ImageGallery';
 import Loader from 'components/Loader';
 // import Button from 'components/Button';
-// import Modal from 'components/Modal';
+import Modal from 'components/Modal';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { mapper } from './helper/mapper';
@@ -28,15 +28,6 @@ export default class App extends Component {
       prevState.page !== this.state.page
     ) {
       return this.getImages();
-    } else {
-      return toast.warn(`Ничего не найдено`, {
-        position: 'top-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        draggable: true,
-        progress: undefined,
-      });
     }
   }
 
@@ -49,7 +40,7 @@ export default class App extends Component {
   };
 
   getImages = () => {
-    const { query, page, error } = this.state;
+    const { query, page } = this.state;
 
     this.setState({ showSpinner: true });
 
@@ -58,14 +49,32 @@ export default class App extends Component {
         this.setState(prevState => ({
           images: [...prevState.images, ...mapper(images.hits)],
         }));
+        if (images.hits.length === 0) {
+          toast.warn(`Ничего не найдено`, {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            draggable: true,
+            progress: undefined,
+          });
+        }
       })
       .catch(error => this.setState({ error }))
       .finally(() => this.setState({ showSpinner: false }));
   };
 
+  toggleModal = () => {
+    this.setState(({ showModal }) => ({ showModal: !showModal }));
+  };
+
+  onClickImg = imageModal => {
+    this.setState({ largeImageURL: imageModal });
+    this.toggleModal();
+  };
+
   render() {
-    const { images, query, showModal, showSpinner, largeImageURL, error } =
-      this.state;
+    const { images, showModal, showSpinner, largeImageURL, error } = this.state;
     return (
       <div className={s.App}>
         <Searchbar onSubmit={this.changeInputValue} />
@@ -82,10 +91,13 @@ export default class App extends Component {
         />
 
         {images && (
-          <ImageGallery images={images} onOpenModal={this.onClickLargeImage} />
+          <ImageGallery images={images} onOpenModal={this.onClickImg} />
         )}
 
         {showSpinner && <Loader />}
+        {showModal && (
+          <Modal onClose={this.toggleModal} imageModal={largeImageURL} />
+        )}
 
         {error &&
           toast.error(`${error.massage}`, {

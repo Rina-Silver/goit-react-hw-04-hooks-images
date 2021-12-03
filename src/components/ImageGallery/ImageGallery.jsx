@@ -4,6 +4,7 @@ import s from './ImageGallery.module.css';
 import ImageGalleryItem from './ImageGalleryItem';
 //rfc
 export default function ImageGallery({ images, onOpenModal }) {
+  console.log(images);
   return (
     <div>
       <ul className={s.ImageGallery}>
@@ -24,6 +25,8 @@ ImageGallery.propTypes = {
   images: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
+      src: PropTypes.string.isRequired,
+      srcLarge: PropTypes.string.isRequired,
     }).isRequired,
   ).isRequired,
   onOpenModal: PropTypes.func.isRequired,
