@@ -4,7 +4,7 @@ import s from './ImageGallery.module.css';
 import ImageGalleryItem from './ImageGalleryItem';
 //rfc
 export default function ImageGallery({ images, onOpenModal }) {
-  console.log(images);
+  //console.log(images);
   return (
     <div>
       <ul className={s.ImageGallery}>
