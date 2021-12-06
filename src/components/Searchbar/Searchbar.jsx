@@ -10,7 +10,6 @@ export default class Searchbar extends Component {
   };
   static propTypes = {
     onSubmit: PropTypes.func.isRequired,
-    value: PropTypes.string,
   };
 
   handleValueChange = e => {
