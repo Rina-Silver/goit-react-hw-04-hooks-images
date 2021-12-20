@@ -4,9 +4,55 @@ import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export default function Searchbar() {
-  return <div></div>;
+export default function Searchbar({ onSubmit }) {
+  const [value, setValue] = useState('');
+
+  const handleValueChange = e => {
+    setValue(e.currentTarget.value.toLowerCase());
+  };
+
+  const handleSubmit = e => {
+    e.preventDefault();
+
+    if (value.trim() === '') {
+      // console.log('Не введено значение');
+      return toast.error('Не введено значение', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+    onSubmit(value);
+    setValue('');
+  };
+
+  return (
+    <header className={s.Searchbar}>
+      <form className={s.SearchForm} onSubmit={handleSubmit}>
+        <button type="submit" className={s.SearchForm_button}>
+          <span className={s.SearchForm_button_label}>🐌</span>
+        </button>
+
+        <input
+          className={s.SearchForm_input}
+          type="text"
+          placeholder="Search images and photos"
+          value={value}
+          autoComplete="off"
+          autoFocus
+          onChange={handleValueChange}
+        />
+      </form>
+    </header>
+  );
 }
+Searchbar.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};
 
 // export default class Searchbar extends Component {
 //   state = {
