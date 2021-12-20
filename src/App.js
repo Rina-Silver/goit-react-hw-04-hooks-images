@@ -23,37 +23,34 @@ export default function App() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const getImages = () => {
-      if (!query) {
-        return;
-      }
+    if (!query) {
+      return;
+    }
 
-      setShowSpinner(true);
+    setShowSpinner(true);
 
-      API.fetchPixabayImg(query, page)
-        .then(images => {
-          setImages(prevImages => [...prevImages, ...mapper(images.hits)]);
+    API.fetchPixabayImg(query, page)
+      .then(images => {
+        setImages(prevImages => [...prevImages, ...mapper(images.hits)]);
 
-          if (images.hits.length === 0) {
-            toast.warn(`Ничего не найдено`, {
-              position: 'top-right',
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              draggable: true,
-              progress: undefined,
-            });
-          }
-        })
-        .catch(error => setError(error))
-        .finally(() => {
-          setShowSpinner(false);
-          if (page > 1) {
-            scrollTo();
-          }
-        });
-    };
-    getImages();
+        if (images.hits.length === 0) {
+          toast.warn(`Ничего не найдено`, {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            draggable: true,
+            progress: undefined,
+          });
+        }
+      })
+      .catch(error => setError(error))
+      .finally(() => {
+        setShowSpinner(false);
+        if (page > 1) {
+          scrollTo();
+        }
+      });
   }, [page, query]);
 
   const changeInputValue = query => {
